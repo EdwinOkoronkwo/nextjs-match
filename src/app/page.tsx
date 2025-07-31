@@ -1,5 +1,3 @@
-
-import Link from "next/link";
 import { Button } from "@heroui/button";
 import { FaRegSmile } from "react-icons/fa";
 import {auth, signOut} from "@/auth";
