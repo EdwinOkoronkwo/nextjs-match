@@ -9,6 +9,7 @@ import {GiPadlock} from "react-icons/gi";
 import {Input} from "@nextui-org/react";
 import {Button} from "@heroui/button";
 import {registerUser} from "@/app/actions/authActions";
+import {handleFormServerErrors} from "@/lib/utils";
 
 export default function RegisterForm() {
     const {register, handleSubmit, setError, formState: {errors, isValid, isSubmitting}} = useForm<RegisterSchema>({
@@ -21,14 +22,7 @@ export default function RegisterForm() {
         if(result.status == 'success') {
             console.log('User successfully registered');
         }else {
-            if(Array.isArray(result.error)){
-                result.error.forEach((e) => {
-                    const fieldName = e.path.join('.')
-                    setError(fieldName, { message: e.message })
-                })
-            }else {
-                setError('root.serverError', {message: result.error})
-            }
+            handleFormServerErrors(result, setError);
         }
     }
     return (

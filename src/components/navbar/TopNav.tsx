@@ -7,9 +7,11 @@ import {Button} from "@heroui/button";
 import NavLink from "@/components/navbar/NavLink";
 import {auth} from "@/auth";
 import UserMenu from "@/components/navbar/UserMenu";
+import {getUserInfoNav} from "@/app/actions/userActions";
 
 export default async function TopNav() {
     const session = await auth();
+    const userInfo = session?.user && await getUserInfoNav()
 
     return (
         <Navbar
@@ -37,8 +39,8 @@ export default async function TopNav() {
                 <NavLink href="/messages" label="Messages"/>
             </NavbarContent>
             <NavbarContent justify="end">
-                {session?.user ? (
-                    <UserMenu user={session.user} />
+                {userInfo ? (
+                    <UserMenu userInfo={userInfo} />
                 ): (
                     <>
                         <Button as={Link} href="/login" variant="bordered" className="text-white">Login</Button>
