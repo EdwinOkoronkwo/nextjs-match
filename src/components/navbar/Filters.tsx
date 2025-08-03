@@ -1,21 +1,22 @@
 'use client'
 
 import {Button} from "@heroui/button";
-import {Select, SelectItem, Slider, Selection} from "@nextui-org/react";
+import {Select, SelectItem, Slider, Selection, Switch} from "@nextui-org/react";
 import {useFilters} from "@/hooks/useFilter";
 import {Spinner} from "@heroui/react";
 
 export default function Filters() {
-    const {genderList, orderByList, filters, selectOrder, selectGender, selectAge, isPending}  = useFilters()
+    const {genderList, orderByList, filters,
+        selectOrder, selectGender, selectAge, isPending, totalCount, selectWithPhoto}  = useFilters()
 
     return (
         <div className="shadow-md py-2">
             <div className="flex flex-row justify-around items-center">
                 <div className="flex gap-2 items-center">
-                    <div className="text-secondary font-semibold text-xl">Results: 10</div>
-                    {isPending && <Spinner size={'sm'} color={'secondary'} />}
+                    <div className="text-secondary font-semibold text-xl">
+                        Results: {isPending ? <Spinner size={'sm'} color={'secondary'} />: totalCount}
+                    </div>
                 </div>
-
                 <div className="flex gap-2 items-center">
                     <div>Gender:</div>
                     {genderList.map(({icon: Icon, value}) => (
@@ -39,6 +40,16 @@ export default function Filters() {
                         maxValue={100}
                         defaultValue={filters.ageRange}
                         onChangeEnd={(value) => selectAge(value as number[])}
+                        aria-label={'Age range slider'}
+                        />
+                </div>
+                <div className={'flex flex-col items-center'}>
+                    <p className={'text-sm'}>With photo</p>
+                    <Switch
+                        color={'secondary'}
+                        defaultSelected
+                        size={'sm'}
+                        onChange={selectWithPhoto}
                         />
                 </div>
                 <div className={'w-1/4'}>

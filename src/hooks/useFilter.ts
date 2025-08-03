@@ -2,7 +2,7 @@ import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {FaFemale, FaMale} from "react-icons/fa";
 import {Selection} from "@nextui-org/react";
 import useFilterStore from "@/hooks/useFilterStore";
-import {useEffect, useTransition} from "react";
+import {ChangeEvent, useEffect, useTransition} from "react";
 import usePaginationStore from "@/hooks/usePaginationStore";
 
 export const useFilters = () => {
@@ -12,19 +12,20 @@ export const useFilters = () => {
     const [isPending, startTransition] = useTransition()
     const {filters, setFilters} = useFilterStore();
 
-    const {pageNumber, pageSize, setPage} = usePaginationStore(state => ({
+    const {pageNumber, pageSize, setPage, totalCount} = usePaginationStore(state => ({
         pageNumber: state.pagination.pageNumber,
         pageSize: state.pagination.pageSize,
-        setPage: state.setPage
+        setPage: state.setPage,
+        totalCount: state.pagination.totalCount,
     }));
 
-    const {gender, ageRange, orderBy} = filters;
+    const {gender, ageRange, orderBy, withPhoto} = filters;
 
     useEffect(() => {
-        if(gender || ageRange || orderBy) {
+        if(gender || ageRange || orderBy || withPhoto) {
             setPage(1)
         }
-    }, [gender, ageRange, orderBy, setPage]);
+    }, [gender, ageRange, orderBy, setPage, withPhoto]);
 
     useEffect(() => {
         startTransition(() => {
@@ -34,6 +35,7 @@ export const useFilters = () => {
             if(orderBy) searchParams.set('orderBy', orderBy.toString());
             if(pageSize) searchParams.set('pageSize', pageSize.toString());
             if(pageNumber) searchParams.set('pageNumber', pageNumber.toString());
+            searchParams.set('withPhoto', withPhoto.toString());
 
             router.replace(`${pathname}?${searchParams.toString()}`);
         })
@@ -64,7 +66,10 @@ export const useFilters = () => {
     const handleGenderSelect = (value: string) => {
         if(gender.includes(value)) setFilters("gender", gender.filter(g => g !== value));
         else setFilters("gender", [...gender, value]);
+    }
 
+    const handleWithPhotoToggle = (e: ChangeEvent<HTMLInputElement>) => {
+        setFilters("withPhoto", e.target.checked);
     }
 
     return {
@@ -73,7 +78,9 @@ export const useFilters = () => {
         selectAge: handleAgeSelect,
         selectGender: handleGenderSelect,
         selectOrder: handleOrderSelect,
+        selectWithPhoto: handleWithPhotoToggle,
         filters,
         isPending,
+        totalCount
     }
 }
