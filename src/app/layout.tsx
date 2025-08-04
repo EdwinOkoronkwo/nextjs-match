@@ -24,11 +24,12 @@ export default async function RootLayout({
 }>) {
     const session = await auth();
     const userId = session?.user?.id || null;
+    const profileComplete = session?.user.profileComplete as boolean;
     return (
         // Apply the font variables to the html tag
         <html lang="en" className={`${inter.variable} `}>
         <body>
-        <Providers userId={userId}>
+        <Providers userId={userId} profileComplete={profileComplete}>
             <TopNav />
             <main className="container mx-auto">
                 {children}
