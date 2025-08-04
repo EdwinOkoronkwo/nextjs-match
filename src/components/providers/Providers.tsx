@@ -31,7 +31,8 @@ import {getUnreadMessageCount} from "@/app/actions/messageActions";
 
 
 
-export default function Providers({children, userId}: {children: ReactNode, userId: string | null}) {
+export default function Providers({children, userId, profileComplete}:
+{children: ReactNode, userId: string | null, profileComplete: boolean}) {
     const {updateUnreadCount} = useMessageStore(state => ({
         updateUnreadCount: state.updateUnreadCount,
     }));
@@ -48,8 +49,8 @@ export default function Providers({children, userId}: {children: ReactNode, user
         }
     }, [setUnreadCount, userId]);
 
-    usePresenceChannel();
-    useNotificationChannel(userId)
+    usePresenceChannel(userId, profileComplete);
+    useNotificationChannel(userId, profileComplete)
     return (
         <HeroUIProvider>
             <ToastContainer position="top-right" hideProgressBar className="z-50"/>

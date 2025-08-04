@@ -6,9 +6,16 @@ import {prisma} from "@/lib/prisma";
 
 export const {handlers: {GET, POST}, auth, signOut, signIn} = NextAuth({
     callbacks: {
+        async jwt({user, token}){
+            if(user){
+                token.profileComplete = user.profileComplete
+            }
+            return token;
+        },
         async session({token, session}){
             if(token.sub && session.user) {
                 session.user.id = token.sub;
+                session.user.profileComplete = token.profileComplete;
             }
             return session;
         }
